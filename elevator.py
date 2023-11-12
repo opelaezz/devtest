@@ -120,7 +120,17 @@ class Demand:
         self.travel_time = pd.to_timedelta(abs(self.destination_floor - self.current_floor) * 5, unit='s')        
         # Record the time when the passenger exits the elevator        
         self.leave_time = self.enter_time + self.time_reach + self.travel_time
-######## Process for collecting elevator information #######        
+        
+######## Process for collecting elevator information #######
+# Database connection
+import psycopg2
+'''conn = psycopg2.connect(host="localhost",database="MyDataBase",user="username",password="password")
+cur = conn.cursor()
+# insert into elevator table
+insert_sql = """
+    INSERT INTO elevator (call_time, enter_time, leave_time,wait_time,travel_time, current_floor, destination_floor, elevator_last_position)
+    VALUES (%(call_time)s, %(enter_time)s, %(leave_time)s, %(wait_time)s, %(travel_time)s, %(current_floor)s, %(destination_floor)s, %(elevator_last_position)s,)
+"""   ''' 
 # Simulation parameters (first demand)
 num_floors = 10
 lastfloor = random.choice(range(num_floors))
@@ -159,6 +169,8 @@ for i in demands.index:
                        'wait_time': passenger.wait_time, 'travel_time':passenger.travel_time,
                        'current_floor': passenger.current_floor, 'destination_floor':passenger.destination_floor,
                          'elevator_last_position': elevator.direction}
+    # inserting the results from demand i
+    #cur.execute(insert_sql, results_demand)
     
     elevator_dyn = pd.concat([elevator_dyn, pd.DataFrame(results_demand, index = [0])])
 
